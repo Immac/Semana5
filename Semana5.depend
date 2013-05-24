@@ -41,7 +41,7 @@
 	<string>
 	<cstdlib>
 
-1368408025 source:c:\users\immac\documents\github\semana5\dot.cpp
+1369101360 source:c:\users\immac\documents\github\semana5\dot.cpp
 	"Dot.h"
 
 1368209348 c:\users\immac\documents\github\semana5\dot.h
@@ -65,7 +65,7 @@
 	<string>
 	<cstdlib>
 
-1368472933 source:c:\users\immac\documents\github\semana5\main.cpp
+1369098384 source:c:\users\immac\documents\github\semana5\main.cpp
 	"SDL.h"
 	"SDL_image.h"
 	"Timer.h"
@@ -74,6 +74,8 @@
 	<string>
 	<cstdlib>
 	"block.h"
+	<list>
+	"paddle.h"
 
 1368205049 source:c:\users\immac\documents\github\semana5\particle.cpp
 	"Particle.h"
@@ -84,18 +86,18 @@
 1368205049 source:c:\users\immac\documents\github\semana5\utility.cpp
 	"Utility.h"
 
-1368473303 source:c:\users\immac\documents\github\semana5\block.cpp
+1369097150 source:c:\users\immac\documents\github\semana5\block.cpp
 	"block.h"
 
-1368472418 c:\users\immac\documents\github\semana5\block.h
+1369098057 c:\users\immac\documents\github\semana5\block.h
 	"SDL.h"
 	"SDL_image.h"
 	"Utility.h"
 	"Dot.h"
 
-1368464640 source:c:\users\immac\documents\github\semana5\paddle.cpp
+1369100557 source:c:\users\immac\documents\github\semana5\paddle.cpp
 	"paddle.h"
 
-1368465051 c:\users\immac\documents\github\semana5\paddle.h
+1369098064 c:\users\immac\documents\github\semana5\paddle.h
 	"block.h"
 

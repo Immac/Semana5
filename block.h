@@ -22,6 +22,9 @@ class Block
 {
 
     public:
+        Block(float x, float y, int width, int height,
+              SDL_Surface *image, SDL_Surface *screen,
+              Dot *dot);
 
         bool isColliding;
         bool wasColliding;
@@ -32,13 +35,12 @@ class Block
         SDL_Surface *image;
         SDL_Surface *screen;
         Dot *dot;
-        Block(float x, float y, int width, int height,
-              SDL_Surface *image, SDL_Surface *screen,
-              Dot *dot);
-        int collisionType();
+        float xVel;
+        float yVel;
+            int collisionType();
         bool isPointInside(float pointX, float pointY);
         void show();
-        void logic();
+        virtual void logic();
 
         virtual ~Block();
     protected:

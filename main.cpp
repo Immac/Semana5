@@ -11,7 +11,10 @@ and may not be redistributed without written permission.*/
 #include <cstdlib>
 #include "block.h"
 #define PI 3.14159265
+#include <list>
+#include "paddle.h"
 
+using namespace std;
 //The surfaces
 
 const int SCREEN_BPP = 32;
@@ -24,6 +27,7 @@ SDL_Surface *screen = NULL;
 
 //The event structure
 SDL_Event event;
+SDL_MouseMotionEvent evento;
 
 bool init()
 {
@@ -74,9 +78,18 @@ int main( int argc, char* args[] )
     //The dot that will be used
     Dot myDot(screen);
     SDL_Surface *block_image = load_image("block.png");
-    Block *block = new Block(200,200,100,25,block_image,screen,&myDot);
-    Block *block2 = new Block(300,225,100,25,block_image,screen,&myDot);
-    block2->life =3;
+    list < Block* > blockList;
+    Block *block;
+
+    for(int i = 0; i < 6; i++){
+        for(int j = 0; j < 5; j++){
+    block = new Block(i * 100,j * 25,100,25,block_image,screen,&myDot);
+    blockList.push_back(block);
+        }
+    }
+    Paddle hero((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT-10,100,25,block_image,screen,&myDot,&event);
+
+
     //While the user hasn't quit
     while( quit == false )
     {
@@ -98,23 +111,25 @@ int main( int argc, char* args[] )
             }
         }
 
+
+
         //Move the dot
         myDot.move();
+        hero.handleInput();
+        hero.logic();
+        list< Block* > :: iterator blockIterator;
+        blockIterator = blockList.begin();
+        while(blockIterator != blockList.end()){
 
 
-        if (block != 0){
-        block->logic();
-        if (block->life <= 0){
-            delete block;
-            block = 0;
+        ((Block*)(*blockIterator))->logic();
+
+        if(((Block*)(*blockIterator))->life <= 0){
+            blockList.erase(blockIterator);
+            blockIterator --;
+
         }
-        }
-        if (block2 != 0){
-        block2->logic();
-        if (block2->life <= 0){
-            delete block2;
-            block2 = 0;
-        }
+            blockIterator ++;
         }
 
 
@@ -123,23 +138,24 @@ int main( int argc, char* args[] )
 
         //Show the dot on the screen
         myDot.show();
-        if (block != 0){
-        block->show();
+        hero.show();
+        blockIterator = blockList.begin();
+        while(blockIterator != blockList.end()){
+        ((Block*)(*blockIterator))->show();
+            blockIterator ++;
         }
-        if (block2 != 0){
-        block2->show();
-        }
+
+
         //Update the screen
-        if( SDL_Flip( screen ) == -1 )
-        {
+        if( SDL_Flip( screen ) == -1 ){
             return 1;
         }
 
         //Cap the frame rate
-        if( fps.get_ticks() < 1000 / FRAMES_PER_SECOND )
-        {
+        if( fps.get_ticks() < 1000 / FRAMES_PER_SECOND ){
             SDL_Delay( ( 1000 / FRAMES_PER_SECOND ) - fps.get_ticks() );
         }
+
     }
 
     //Clean up

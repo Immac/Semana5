@@ -19,7 +19,7 @@ Dot::Dot(SDL_Surface *screen)
     y = 0;
 
     angle = -45;
-    velocity = 5;
+    velocity = 8;
 
     //Initialize particles
     for( int p = 0; p < TOTAL_PARTICLES; p++ )
@@ -49,6 +49,7 @@ Dot::~Dot()
 
 void Dot::handle_input()
 {
+
 //    //If a key was pressed
 //    if( event.type == SDL_KEYDOWN )
 //    {
@@ -85,9 +86,12 @@ void Dot::move()
         angle=-angle+180;
     }
 
-    if( ( y < 0 ) || ( y + DOT_HEIGHT > SCREEN_HEIGHT ) )
+    if( ( y < 0 ) || ( y + DOT_HEIGHT > SCREEN_HEIGHT + 500 ) )
     {
         angle=-angle;
+    }
+    if (y > SCREEN_HEIGHT + 400){
+        exit(0);
     }
 }
 
