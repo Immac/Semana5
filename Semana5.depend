@@ -41,15 +41,19 @@
 	<string>
 	<cstdlib>
 
-1369101360 source:c:\users\immac\documents\github\semana5\dot.cpp
+1369787585 source:c:\users\immac\documents\github\semana5\dot.cpp
 	"Dot.h"
 
-1368209348 c:\users\immac\documents\github\semana5\dot.h
+1369787151 c:\users\immac\documents\github\semana5\dot.h
 	<cmath>
-	"Utility.h"
 	"Particle.h"
+	"SDL_ttf.h"
+	<cstring>
+	<list>
+	"block.h"
+	"SDL_mixer.h"
 
-1368208269 c:\users\immac\documents\github\semana5\utility.h
+1369531262 c:\users\immac\documents\github\semana5\utility.h
 	"SDL.h"
 	"SDL_image.h"
 	"Timer.h"
@@ -65,9 +69,10 @@
 	<string>
 	<cstdlib>
 
-1369098384 source:c:\users\immac\documents\github\semana5\main.cpp
+1369787846 source:c:\users\immac\documents\github\semana5\main.cpp
 	"SDL.h"
 	"SDL_image.h"
+	"SDL_mixer.h"
 	"Timer.h"
 	"Particle.h"
 	"Dot.h"
@@ -76,6 +81,12 @@
 	"block.h"
 	<list>
 	"paddle.h"
+	"slowblock.h"
+	"normalblock.h"
+	"utility.h"
+	"SDL_ttf.h"
+	"gravityblock.h"
+	"shieldblock.h"
 
 1368205049 source:c:\users\immac\documents\github\semana5\particle.cpp
 	"Particle.h"
@@ -83,21 +94,46 @@
 1368205049 source:c:\users\immac\documents\github\semana5\timer.cpp
 	"Timer.h"
 
-1368205049 source:c:\users\immac\documents\github\semana5\utility.cpp
+1369554788 source:c:\users\immac\documents\github\semana5\utility.cpp
 	"Utility.h"
 
-1369097150 source:c:\users\immac\documents\github\semana5\block.cpp
+1369787301 source:c:\users\immac\documents\github\semana5\block.cpp
 	"block.h"
 
-1369098057 c:\users\immac\documents\github\semana5\block.h
+1369783773 c:\users\immac\documents\github\semana5\block.h
 	"SDL.h"
 	"SDL_image.h"
 	"Utility.h"
 	"Dot.h"
+	"SDL_mixer.h"
 
-1369100557 source:c:\users\immac\documents\github\semana5\paddle.cpp
+1369786854 source:c:\users\immac\documents\github\semana5\paddle.cpp
 	"paddle.h"
 
-1369098064 c:\users\immac\documents\github\semana5\paddle.h
+1369786866 c:\users\immac\documents\github\semana5\paddle.h
+	"block.h"
+
+1369555656 source:c:\users\immac\documents\github\semana5\slowblock.cpp
+	"slowblock.h"
+
+1369555002 c:\users\immac\documents\github\semana5\slowblock.h
+	"block.h"
+
+1369554915 c:\users\immac\documents\github\semana5\normalblock.h
+	"block.h"
+
+1369555656 source:c:\users\immac\documents\github\semana5\normalblock.cpp
+	"normalblock.h"
+
+1369555656 source:c:\users\immac\documents\github\semana5\gravityblock.cpp
+	"gravityblock.h"
+
+1369555002 c:\users\immac\documents\github\semana5\gravityblock.h
+	"block.h"
+
+1369555656 source:c:\users\immac\documents\github\semana5\shieldblock.cpp
+	"shieldblock.h"
+
+1369554915 c:\users\immac\documents\github\semana5\shieldblock.h
 	"block.h"
 

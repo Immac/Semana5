@@ -12,14 +12,19 @@ Dot::Dot(SDL_Surface *screen)
     SDL_SetAlpha( green, SDL_SRCALPHA | SDL_RLEACCEL, 192 );
 
     dot = load_image( "dot.bmp" );
-
+    this->currentState = NORMAL;
     this->screen=screen;
     //Initialize the offsets
-    x = 0;
-    y = 0;
-
-    angle = -45;
+    x = SCREEN_WIDTH/2;
+    y = SCREEN_HEIGHT/2;
+    this->durationState = 0;
+    angle = 45;
     velocity = 8;
+    blockList = 0;
+    sfxShield = Mix_LoadWAV("metal.wav");
+     sfxGravity = Mix_LoadWAV("gravity.wav");
+      sfxBound = Mix_LoadWAV("bound.wav");
+      Mix_VolumeChunk(sfxBound,10);
 
     //Initialize particles
     for( int p = 0; p < TOTAL_PARTICLES; p++ )
@@ -32,6 +37,15 @@ Dot::Dot(SDL_Surface *screen)
         }
     }
 }
+
+/*void Dot::setBlockList(list <Block*> &lista){
+this->blockList = lista;
+}
+*/
+
+void Dot::handle_input(){
+}
+
 
 Dot::~Dot()
 {
@@ -47,54 +61,106 @@ Dot::~Dot()
     SDL_FreeSurface( blue );
 }
 
-void Dot::handle_input()
-{
 
-//    //If a key was pressed
-//    if( event.type == SDL_KEYDOWN )
-//    {
-//        //Adjust the velocity
-//        switch( event.key.keysym.sym )
-//        {
-//            case SDLK_UP: yVel -= DOT_HEIGHT / 2; break;
-//            case SDLK_DOWN: yVel += DOT_HEIGHT / 2; break;
-//            case SDLK_LEFT: xVel -= DOT_WIDTH / 2; break;
-//            case SDLK_RIGHT: xVel += DOT_WIDTH / 2; break;
-//        }
-//    }
-//    //If a key was released
-//    else if( event.type == SDL_KEYUP )
-//    {
-//        //Adjust the velocity
-//        switch( event.key.keysym.sym )
-//        {
-//            case SDLK_UP: yVel += DOT_HEIGHT / 2; break;
-//            case SDLK_DOWN: yVel -= DOT_HEIGHT / 2; break;
-//            case SDLK_LEFT: xVel += DOT_WIDTH / 2; break;
-//            case SDLK_RIGHT: xVel -= DOT_WIDTH / 2; break;
-//        }
-//    }
-}
 
 void Dot::move()
 {
+    this->angle = toUsableAngle(angle);
     this->x += (cos (angle*PI/180) * velocity );
     this->y -= sin (angle*PI/180) * velocity;
+    this->handleState();
 
-    if( ( x < 0 ) || ( x + DOT_WIDTH > SCREEN_WIDTH ) )
+
+
+
+    if( ( x + (cos (angle*PI/180) * velocity ) < 0 ) || ( x + (cos (angle*PI/180) * velocity ) + DOT_WIDTH > SCREEN_WIDTH ) )
     {
-        angle=-angle+180;
+        this->angle = toUsableAngle(-this->angle +180 );
     }
 
-    if( ( y < 0 ) || ( y + DOT_HEIGHT > SCREEN_HEIGHT + 500 ) )
+    if( ( y  - sin (angle*PI/180) * velocity < 0 ) || ( y - sin (angle*PI/180) * velocity + DOT_HEIGHT > SCREEN_HEIGHT ) )
     {
-        angle=-angle;
+        this->angle = toUsableAngle(-this->angle);
     }
     if (y > SCREEN_HEIGHT + 400){
         exit(0);
     }
+
 }
 
+
+void Dot::handleState(){
+
+
+switch(this->currentState){
+case NORMAL:
+
+
+    if (this->durationState-- <= 0){
+       this->startNormal();
+    }
+    break;
+
+case SLOWED:
+
+    break;
+
+case GRAVITY:
+
+     if (this->angle <= 90 || this-> angle >= 270){
+    this->angle = toUsableAngle(angle+rand()%6);
+    } else if(this->angle < 270){
+    this->angle = toUsableAngle(angle-rand()%6);
+    }
+
+    if (this->durationState-- <= 0){
+       this->startNormal();
+    }
+
+    break;
+case SHIELD:
+
+if (this->durationState-- <= 0){
+        this->startNormal();
+    }
+
+}
+}
+
+void Dot::startSlow(){
+this->startNormal();
+
+//this->currentState = SLOWED;
+this->velocity /=2;
+this->durationState = 12*60;
+
+}
+
+void Dot::startGravity(){
+startNormal();
+ Mix_PlayChannel(-1, sfxGravity, 0);
+this->currentState = GRAVITY;
+this->durationState = (rand()%5+5)*60;
+}
+
+void Dot::startNormal(){
+this->velocity = INIT_VELOCITY;
+this->currentState = NORMAL;
+this->durationState = 0;
+
+}
+
+void Dot::startShield(){
+this->startNormal();
+ Mix_PlayChannel(-1, sfxShield, 0);
+this->currentState = SHIELD;
+this->durationState = (rand()%10+6)*60;
+}
+
+void Dot::soundRebound(){
+ Mix_PlayChannel(-1, sfxBound, 0);
+
+}
 void Dot::show_particles()
 {
     //Go through particles

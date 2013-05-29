@@ -4,6 +4,7 @@ and may not be redistributed without written permission.*/
 //The headers
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 #include "Timer.h"
 #include "Particle.h"
 #include "Dot.h"
@@ -13,14 +14,19 @@ and may not be redistributed without written permission.*/
 #define PI 3.14159265
 #include <list>
 #include "paddle.h"
-
+#include "slowblock.h"
+#include "normalblock.h"
+#include "utility.h"
+#include "SDL_ttf.h"
+#include "gravityblock.h"
+#include "shieldblock.h"
 using namespace std;
 //The surfaces
 
 const int SCREEN_BPP = 32;
 
 //The frame rate
-const int FRAMES_PER_SECOND = 60;
+
 
 //The surfaces
 SDL_Surface *screen = NULL;
@@ -36,7 +42,10 @@ bool init()
     {
         return false;
     }
-
+     if( TTF_Init() == -1 )
+    {
+        return false;
+    }
     //Set up the screen
     screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
 
@@ -45,7 +54,10 @@ bool init()
     {
         return false;
     }
-
+      if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 1024 ) == -1 )
+    {
+        return false;
+    }
     //Set the window caption
     SDL_WM_SetCaption( "Semana 5", NULL );
 
@@ -60,9 +72,17 @@ void clean_up()
 {
     SDL_Quit();
 }
+enum BlockToCreate{
+    BLOCKNORMAL,
+    BLOCKSLOW,
+    BLOCKGRAVITY,
+    BLOCKSHIELD
+    };
+
 
 int main( int argc, char* args[] )
 {
+
     //Quit flag
     bool quit = false;
 
@@ -78,17 +98,98 @@ int main( int argc, char* args[] )
     //The dot that will be used
     Dot myDot(screen);
     SDL_Surface *block_image = load_image("block.png");
+    SDL_Surface *slow_block_image = load_image("slow_block.png");
+    SDL_Surface *gravity_block_image = load_image("gravity_block.png");
+    SDL_Surface *shield_block_image = load_image("shielded_block.png");
     list < Block* > blockList;
     Block *block;
+    int block_size_width = 128;
+    int block_size_height = 25;
+    int x,y;
 
-    for(int i = 0; i < 6; i++){
-        for(int j = 0; j < 5; j++){
-    block = new Block(i * 100,j * 25,100,25,block_image,screen,&myDot);
+    block = new NormalBlock(0 * block_size_width,0 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
     blockList.push_back(block);
-        }
-    }
-    Paddle hero((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT-10,100,25,block_image,screen,&myDot,&event);
+    block = new ShieldBlock(1 * block_size_width,0 * block_size_height,block_size_width,block_size_height,shield_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(2 * block_size_width,0 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new ShieldBlock(3 * block_size_width,0 * block_size_height,block_size_width,block_size_height,shield_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(4 * block_size_width,0 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
 
+    block = new NormalBlock(0 * block_size_width,1 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new SlowBlock(1 * block_size_width,1 * block_size_height,block_size_width,block_size_height,slow_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(2 * block_size_width,1 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new SlowBlock(3 * block_size_width,1 * block_size_height,block_size_width,block_size_height,slow_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(4 * block_size_width,1 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+
+    block = new gravityBlock(1 * block_size_width,2 * block_size_height,block_size_width,block_size_height,gravity_block_image,screen,&myDot);
+    blockList.push_back(block);
+     block = new NormalBlock(0 * block_size_width,2 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+     block = new NormalBlock(2 * block_size_width,2 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+     block = new NormalBlock(4 * block_size_width,2 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new gravityBlock(3 * block_size_width,2 * block_size_height,block_size_width,block_size_height,gravity_block_image,screen,&myDot);
+    blockList.push_back(block);
+
+    block = new gravityBlock(0 * block_size_width,3 * block_size_height,block_size_width,block_size_height,gravity_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(1 * block_size_width,3 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(2 * block_size_width,3 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(3 * block_size_width,3 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new gravityBlock(4 * block_size_width,3 * block_size_height,block_size_width,block_size_height,gravity_block_image,screen,&myDot);
+    blockList.push_back(block);
+
+block = new NormalBlock(0 * block_size_width,4 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new ShieldBlock(1 * block_size_width,4 * block_size_height,block_size_width,block_size_height,shield_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(2 * block_size_width,4 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new ShieldBlock(3 * block_size_width,4 * block_size_height,block_size_width,block_size_height,shield_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(4 * block_size_width,4 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+
+    block = new NormalBlock(0 * block_size_width,5 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new SlowBlock(1 * block_size_width,5 * block_size_height,block_size_width,block_size_height,slow_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new SlowBlock(2 * block_size_width,5 * block_size_height,block_size_width,block_size_height,slow_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new SlowBlock(3 * block_size_width,5 * block_size_height,block_size_width,block_size_height,slow_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new NormalBlock(4 * block_size_width,5 * block_size_height,block_size_width,block_size_height,block_image,screen,&myDot);
+    blockList.push_back(block);
+
+
+
+/*
+
+    block = new SlowBlock(2 * block_size_width,3 * block_size_height,block_size_width,block_size_height,slow_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new gravityBlock(2 * block_size_width,5 * block_size_height,block_size_width,block_size_height,gravity_block_image,screen,&myDot);
+    blockList.push_back(block);
+    block = new ShieldBlock(2 * block_size_width,4 * block_size_height,block_size_width,block_size_height,shield_block_image,screen,&myDot);
+    blockList.push_back(block);
+*/
+
+
+
+    myDot.blockList = &blockList;
+
+     Paddle hero((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT-50,50,50,block_image,screen,&myDot,&event);
 
     //While the user hasn't quit
     while( quit == false )
@@ -111,12 +212,14 @@ int main( int argc, char* args[] )
             }
         }
 
-
-
-        //Move the dot
-        myDot.move();
         hero.handleInput();
+
+        //=== LOGIC ===//
+        myDot.move();
         hero.logic();
+        if (hero.isDead){
+            break;
+        }
         list< Block* > :: iterator blockIterator;
         blockIterator = blockList.begin();
         while(blockIterator != blockList.end()){
@@ -125,6 +228,7 @@ int main( int argc, char* args[] )
         ((Block*)(*blockIterator))->logic();
 
         if(((Block*)(*blockIterator))->life <= 0){
+            delete ((Block*)(*blockIterator));
             blockList.erase(blockIterator);
             blockIterator --;
 
@@ -144,7 +248,7 @@ int main( int argc, char* args[] )
         ((Block*)(*blockIterator))->show();
             blockIterator ++;
         }
-
+        hero.showHP();
 
         //Update the screen
         if( SDL_Flip( screen ) == -1 ){

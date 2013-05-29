@@ -42,9 +42,17 @@
 		<Unit filename="Utility.h" />
 		<Unit filename="block.cpp" />
 		<Unit filename="block.h" />
+		<Unit filename="gravityblock.cpp" />
+		<Unit filename="gravityblock.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="normalblock.cpp" />
+		<Unit filename="normalblock.h" />
 		<Unit filename="paddle.cpp" />
 		<Unit filename="paddle.h" />
+		<Unit filename="shieldblock.cpp" />
+		<Unit filename="shieldblock.h" />
+		<Unit filename="slowblock.cpp" />
+		<Unit filename="slowblock.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
